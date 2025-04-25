@@ -2,9 +2,10 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import fitz  # PyMuPDF
 import re
-import csv
+#import csv
 import os
 from pathlib import Path
+
 
 # Funções principais
 def extrair_texto_pdf(caminho_pdf):
@@ -14,8 +15,10 @@ def extrair_texto_pdf(caminho_pdf):
             texto += pagina.get_text()
     return texto
 
+
 def extrair_linhas_adicionais(texto):
-    return re.findall(r"(0\w+\*[^\n\r]*)", texto)
+    return [f"V09{linha}" for linha in re.findall(r"(0\w+\*[^\n\r]*)", texto)]
+
 
 def salvar_arquivos(linhas, nome_base):
     pasta_downloads = str(Path.home() / "Downloads")
@@ -23,11 +26,11 @@ def salvar_arquivos(linhas, nome_base):
     caminho_txt = os.path.join(pasta_downloads, f"{nome_base}.txt")
 
     # Salvar CSV
-    with open(caminho_csv, 'w', newline='', encoding='utf-8') as f_csv:
-        writer = csv.writer(f_csv)
-        writer.writerow(["Informações Adicionais"])
-        for linha in linhas:
-            writer.writerow([linha])
+    # with open(caminho_csv, 'w', newline='', encoding='utf-8') as f_csv:
+    #    writer = csv.writer(f_csv)
+    #    writer.writerow(["Informações Adicionais"])
+    #    for linha in linhas:
+    #        writer.writerow([linha])
 
     # Salvar TXT
     with open(caminho_txt, 'w', encoding='utf-8') as f_txt:
@@ -35,6 +38,7 @@ def salvar_arquivos(linhas, nome_base):
             f_txt.write(f"{linha}\n")
 
     return caminho_csv, caminho_txt
+
 
 # Função acionada no botão
 def processar_pdf():
@@ -52,7 +56,8 @@ def processar_pdf():
     nome_base = Path(caminho_pdf).stem + "_informacoes"
     caminho_csv, caminho_txt = salvar_arquivos(linhas, nome_base)
 
-    messagebox.showinfo("Sucesso", f"Arquivos salvos em:\n{caminho_csv}\n{caminho_txt}")
+    messagebox.showinfo("Sucesso", f"Arquivo salvo em:\n{caminho_txt}")
+
 
 # Interface com customtkinter
 ctk.set_appearance_mode("System")
@@ -77,7 +82,7 @@ pos_y = (altura_tela // 2) - (altura_janela // 2)
 app.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
 
 # Widgets
-label = ctk.CTkLabel(app, text="Clique abaixo para selecionar o PDF e extrair as informações.", font=ctk.CTkFont(size=16))
+label = ctk.CTkLabel(app, text="Selecione o arquivo PDF para extrair o serial.", font=ctk.CTkFont(size=20))
 label.pack(pady=30)
 
 botao = ctk.CTkButton(app, fg_color=("orangered"), text="Selecionar PDF", command=processar_pdf)
