@@ -64,7 +64,7 @@ ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("dark-blue")
 
 app = ctk.CTk()
-app.title("Extrator de serial Vertco")
+app.title("OPERARMOR")
 
 # Defina tamanho da janela
 largura_janela = 500
